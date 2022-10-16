@@ -22,24 +22,6 @@ void managed_pointer_clear(struct MANAGEDPTR_HEAD *head) {
 }
 
 /**
- *
- * @param head
- * @param ep
- */
-static void managed_pointer_append(struct MANAGEDPTR_HEAD *head, struct MPTRENTRY *ep) {
-	struct MPTRENTRY *np;
-	if (LIST_EMPTY(head)) {
-		LIST_INSERT_HEAD(head, ep, entries);
-	} else {
-		LIST_FOREACH(np, head, entries)
-			if (np->entries.le_next == NULL) {
-				LIST_INSERT_AFTER(np, ep, entries);
-				return;
-			}
-	}
-}
-
-/**
  * Use calloc to zero data
  */
 void *managed_pointer_alloc(struct MANAGEDPTR_HEAD *head, size_t size, void (*handler)(void*)) {
