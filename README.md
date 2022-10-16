@@ -25,6 +25,7 @@ mp_clear(void) - This frees all managed pointers
 
 Example code, mp_free only free's pointers it manages.
 
+```
 #include <stdio.h>
 #include <string.h>
 #include "mptr.h"
@@ -47,3 +48,4 @@ int sub() {
 	mp_free(cp);
 	mp_return(1);
 }
+```
