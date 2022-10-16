@@ -11,19 +11,18 @@ If you don't use mp_return or mp_clear you will not free the pointers created,
 it's still C so no compiler magic is in play.
 
 The library creates the following as wrappers around the system variants.
-
+```
 mp_init()
 mp_alloc(size_t , void (*)(void*))
 mp_calloc(size_t, size_t , void (*)(void*)
 mp_realloc(void *, size_t)
 mp_reallocarray(void *, size_t, size_t)
-mp_free(void *)
+mp_free(void *)		- will only free's pointers it manages
+mp_return		- functions as a normal return with the addition of running mp_clear().
+mp_clear(void) 		- This frees all managed pointers.
+```
 
-One of these needs to be called when returning from a function for the whole thing to work'
-mp_return - functions as a normal return with the addition of running mp_clear().
-mp_clear(void) - This frees all managed pointers
-
-Example code, mp_free only free's pointers it manages.
+Example code, 
 
 ```
 #include <stdio.h>
