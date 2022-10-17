@@ -159,10 +159,18 @@ void managed_pointer_setLimits(struct MANAGEDPTR_HEAD *head, int min, int max, i
  * Add a poiter to the list
  */
 void *managed_pointer_link(struct MANAGEDPTR_HEAD *head, void *vptr, void (*handler)(void*)) {
-	MPTRENTRY *eptr = (MPTRENTRY*) calloc(1, sizeof(MPTRENTRY));
-	eptr->data = vptr;
-	eptr->free_handler = handler;
-	LIST_INSERT_HEAD(head, eptr, entries);
+	MPTRENTRY *np;
+	if( vptr != NULL ) {
+		LIST_FOREACH(np, head, entries)
+			if( np->data == vptr ) {
+				return vptr;
+			}
+
+		MPTRENTRY *eptr = (MPTRENTRY*) calloc(1, sizeof(MPTRENTRY));
+		eptr->data = vptr;
+		eptr->free_handler = handler;
+		LIST_INSERT_HEAD(head, eptr, entries);
+	}
 	return vptr;
 }
 
@@ -174,7 +182,6 @@ void *managed_pointer_unlink(struct MANAGEDPTR_HEAD *head, void *vptr) {
 	if( vptr != NULL ) {
 		LIST_FOREACH(np, head, entries)
 			if( np->data == vptr ) {
-				//~ fprintf(stderr, "mp_free: removing\n");
 				LIST_REMOVE(np, entries);
 				free(np);
 				return vptr;

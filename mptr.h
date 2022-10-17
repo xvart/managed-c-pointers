@@ -48,21 +48,25 @@ void *managed_pointer_calloc(struct MANAGEDPTR_HEAD *, size_t , size_t , void (*
  * Macro's with the magic, they perform the same as their namesakes.
  * x variants are extended, this just adds the free_handler pointer.
  */
-#define mp_init() \
-	struct MANAGEDPTR_HEAD managedptr_head = LIST_HEAD_INITIALIZERX(managedptr_head)
+#define mp_link(s) managed_pointer_alloc(&managedptr_head, s, NULL)
+#define mp_unlink(s) managed_pointer_alloc(&managedptr_head, s)
+#define mp_linkx(s, h) managed_pointer_alloc(&managedptr_head, s, h)
 
-#define mp_setLimits(min,max,init) managed_pointer_setLimits(&managedptr_head, min, max, init)
 #define mp_alloc(s) managed_pointer_alloc(&managedptr_head, s, NULL)
 #define mp_allocx(s, h) managed_pointer_alloc(&managedptr_head, s, h)
-#define mp_link(s, h) managed_pointer_alloc(&managedptr_head, s, h)
-#define mp_unlink(s) managed_pointer_alloc(&managedptr_head, s)
 #define mp_calloc(n, s) managed_pointer_calloc(&managedptr_head, n, s, NULL)
 #define mp_callocx(n, s, h) managed_pointer_calloc(&managedptr_head, n, s, h)
+
 #define mp_realloc(p, s) managed_pointer_realloc(&managedptr_head, p, s)
 #define mp_reallocarray(p, n, s) managed_pointer_reallocarray(&managedptr_head, p, n, s)
 #define mp_free(p) managed_pointer_free(&managedptr_head, p)
 #define mp_clear() managed_pointer_clear(&managedptr_head)
 #define mp_info(fp) managed_pointer_info(&managedptr_head, fp)
+
+#define mp_setLimits(min,max,init) managed_pointer_setLimits(&managedptr_head, min, max, init)
+
+#define mp_init() \
+	struct MANAGEDPTR_HEAD managedptr_head = LIST_HEAD_INITIALIZERX(managedptr_head)
 
 #define mp_return(v) do { \
 	managed_pointer_clear(&managedptr_head); \
