@@ -160,7 +160,7 @@ void managed_pointer_setLimits(struct MANAGEDPTR_HEAD *head, int min, int max, i
  */
 void *managed_pointer_link(struct MANAGEDPTR_HEAD *head, void *vptr, void (*handler)(void*)) {
 	MPTRENTRY *eptr = (MPTRENTRY*) calloc(1, sizeof(MPTRENTRY));
-	eptr->data = vptr
+	eptr->data = vptr;
 	eptr->free_handler = handler;
 	LIST_INSERT_HEAD(head, eptr, entries);
 	return vptr;

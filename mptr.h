@@ -45,7 +45,8 @@ void *managed_pointer_reallocarray(struct MANAGEDPTR_HEAD *, void *, size_t , si
 void *managed_pointer_calloc(struct MANAGEDPTR_HEAD *, size_t , size_t , void (*)(void*));
 
 /**
- * Macro's with the magic
+ * Macro's with the magic, they perform the same as their namesakes.
+ * x variants are extended, this just adds the free_handler pointer.
  */
 #define mp_init() \
 	struct MANAGEDPTR_HEAD managedptr_head = LIST_HEAD_INITIALIZERX(managedptr_head)
