@@ -63,6 +63,7 @@ void *managed_pointer_calloc(struct MANAGEDPTR_HEAD *, size_t , size_t , void (*
 #define mp_clear() managed_pointer_clear(&managedptr_head)
 #define mp_info(fp) managed_pointer_info(&managedptr_head, fp)
 
+
 #define mp_setLimits(min,max,init) managed_pointer_setLimits(&managedptr_head, min, max, init)
 
 #define mp_init() \
