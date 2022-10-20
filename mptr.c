@@ -52,7 +52,7 @@ void managed_pointer_info(struct MANAGEDPTR_HEAD *head, FILE *fp) {
 }
 
 /**
- * Get the size allocated for a pointer
+ * Get the size allocated for a pointer.
  */
 int managed_pointer_getSize(struct MANAGEDPTR_HEAD *head, void *vp) {
 	MPTRENTRY *np;
