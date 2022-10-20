@@ -22,7 +22,7 @@ typedef struct MPTRENTRY {
 	/* Used when a complex free is needed */
 	void (*free_handler)(void*);
 	/* needed if I add a manager */
-	int used;
+	int size;
 	/* Doubly-linked List. */
 	LIST_ENTRY(MPTRENTRY) entries;
 } MPTRENTRY;
@@ -43,6 +43,7 @@ void managed_pointer_setLimits(struct MANAGEDPTR_HEAD *, int , int , int);
 void *managed_pointer_malloc(struct MANAGEDPTR_HEAD *, size_t , void (*)(void*));
 void *managed_pointer_reallocarray(struct MANAGEDPTR_HEAD *, void *, size_t , size_t );
 void *managed_pointer_calloc(struct MANAGEDPTR_HEAD *, size_t , size_t , void (*)(void*));
+int managed_pointer_getSize(struct MANAGEDPTR_HEAD *, void *);
 
 /**
  * Macro's with the magic, they perform the same as their namesakes.
@@ -63,6 +64,7 @@ void *managed_pointer_calloc(struct MANAGEDPTR_HEAD *, size_t , size_t , void (*
 #define mp_clear() managed_pointer_clear(&managedptr_head)
 #define mp_info(fp) managed_pointer_info(&managedptr_head, fp)
 
+#define mp_getSize(p) managed_pointer_getSize(&managedptr_head, p)
 
 #define mp_setLimits(min,max,init) managed_pointer_setLimits(&managedptr_head, min, max, init)
 

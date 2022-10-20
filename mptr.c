@@ -9,7 +9,7 @@
 MPTRENTRY *managed_pointer_findEmpty(struct MANAGEDPTR_HEAD *head) {
 	MPTRENTRY *np;
 	LIST_FOREACH(np, head, entries)
-		if( np->used == 0 ) {
+		if( np->size == 0 ) {
 			return np;
 		}
 	return NULL;
@@ -35,7 +35,7 @@ void managed_pointer_trim(struct MANAGEDPTR_HEAD *head, int size) {
 	MPTRENTRY *entry_ptr;
 	MPTRENTRY *last_ptr;
 	LIST_FOREACH(entry_ptr, head, entries)
-		if( entry_ptr->used == 0 ) {
+		if( entry_ptr->size == 0 ) {
 			last_ptr = *entry_ptr->entries.le_prev;
 			LIST_REMOVE(entry_ptr, entries);
 			free(entry_ptr);
@@ -49,6 +49,18 @@ void managed_pointer_trim(struct MANAGEDPTR_HEAD *head, int size) {
  */
 void managed_pointer_info(struct MANAGEDPTR_HEAD *head, FILE *fp) {
 	fprintf(fp, "Head: min %u, max %u, init %u, count %u\n", head->min, head->max, head->init, head->count);
+}
+
+/**
+ * Get the size allocated for a pointer
+ */
+int managed_pointer_getSize(struct MANAGEDPTR_HEAD *head, void *vp) {
+	MPTRENTRY *np;
+	LIST_FOREACH(np, head, entries)
+		if( np->data == vptr ) {
+			return np->size;
+		}
+	return 0;
 }
 
 /**
@@ -93,6 +105,7 @@ void managed_pointer_clear(struct MANAGEDPTR_HEAD *head) {
 void *managed_pointer_malloc(struct MANAGEDPTR_HEAD *head, size_t size, void (*handler)(void*)) {
 	MPTRENTRY *eptr = (MPTRENTRY*) calloc(1, sizeof(MPTRENTRY));
 	eptr->data = malloc(size);
+	eptr->size = size;
 	eptr->free_handler = handler;
 	LIST_INSERT_HEAD(head, eptr, entries);
 	return eptr->data;
@@ -104,6 +117,7 @@ void *managed_pointer_malloc(struct MANAGEDPTR_HEAD *head, size_t size, void (*h
 void *managed_pointer_calloc(struct MANAGEDPTR_HEAD *head, size_t num, size_t size, void (*handler)(void*)) {
 	MPTRENTRY *eptr = (MPTRENTRY*) calloc(1, sizeof(MPTRENTRY));
 	eptr->data = calloc(num, size);
+	eptr->size = num*size;
 	eptr->free_handler = handler;
 	LIST_INSERT_HEAD(head, eptr, entries);
 	return eptr->data;
@@ -117,6 +131,7 @@ void *managed_pointer_reallocarray(struct MANAGEDPTR_HEAD *head, void *vptr, siz
 	LIST_FOREACH(np, head, entries)
 		if( np->data == vptr ) {
 			if( reallocarray(np->data, num, size) != NULL )
+				np->size = num*size;
 				return np->data;
 			else
 				return NULL;
@@ -132,6 +147,7 @@ void *managed_pointer_realloc(struct MANAGEDPTR_HEAD *head, void *vptr, size_t s
 	LIST_FOREACH(np, head, entries)
 		if( np->data == vptr ) {
 			if( realloc(np->data, size) != NULL )
+				np->size = size;
 				return np->data;
 			else
 				return NULL;
