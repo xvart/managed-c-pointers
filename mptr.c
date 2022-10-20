@@ -87,12 +87,12 @@ void managed_pointer_clear(struct MANAGEDPTR_HEAD *head) {
 /**
  * Use calloc to zero data.
  *
- * alias: mp_alloc, mp_allocx
+ * alias: mp_malloc, mp_mallocx
  *
  */
-void *managed_pointer_alloc(struct MANAGEDPTR_HEAD *head, size_t size, void (*handler)(void*)) {
+void *managed_pointer_malloc(struct MANAGEDPTR_HEAD *head, size_t size, void (*handler)(void*)) {
 	MPTRENTRY *eptr = (MPTRENTRY*) calloc(1, sizeof(MPTRENTRY));
-	eptr->data = calloc(1, size);
+	eptr->data = malloc(size);
 	eptr->free_handler = handler;
 	LIST_INSERT_HEAD(head, eptr, entries);
 	return eptr->data;
@@ -150,7 +150,7 @@ void *managed_pointer_realloc(struct MANAGEDPTR_HEAD *head, void *vptr, size_t s
  *
  * Use case this is intended to solve:
  *
- * regex_t *re1_ptr = mp_allocx(sizeof(regex_t), regfree);
+ * regex_t *re1_ptr = mp_mallocx(sizeof(regex_t), regfree);
  * regcomp(re1_ptr, p1, REG_NEWLINE);
  *
  * mp_free(re1_ptr);

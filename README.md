@@ -17,13 +17,13 @@ mp_link(void *)						- Add an unmanaged pointer to the list
 mp_unlink(void *)					- Remove a pointer from the link
 mp_link(void *, void (*)(void*))	- Add a pointer to the list with free
 
-mp_alloc(size_t)
+mp_malloc(size_t)
 mp_calloc(size_t, size_t)
 
 - These are used to add a function pointer to free the data when
 - vanilla free just won't cut it.
 
-mp_allocx(size_t , void (*)(void*))
+mp_mallocx(size_t , void (*)(void*))
 mp_callocx(size_t, size_t , void (*)(void*))
 
 mp_realloc(void *, size_t)
@@ -43,7 +43,7 @@ Building a library with libtool
 `cp mptr.h <also somewhere useful>`
 
 
-One of the use cases mp_allocx is intended to solve is the following and while it doesn't save much by way of code size for a single allocation do it 10 times and it becomes useful.
+One of the use cases mp_mallocx is intended to solve is the following and while it doesn't save much by way of code size for a single allocation do it 10 times and it becomes useful.
 
 The shorter "I don't care what I've allocated" way.
 ```
@@ -54,9 +54,9 @@ void rfree(void *v) {
 
 void fn() {
 	mp_init();
-	regex_t *re1_ptr = mp_allocx(sizeof(regex_t), rfree), *re2_ptr = mp_allocx(sizeof(regex_t), rfree);
-	regex_t *re3_ptr = mp_allocx(sizeof(regex_t), rfree), *re4_ptr = mp_allocx(sizeof(regex_t), rfree);
-	regex_t *re5_ptr = mp_allocx(sizeof(regex_t), rfree), *re6_ptr = mp_allocx(sizeof(regex_t), rfree);
+	regex_t *re1_ptr = mp_mallocx(sizeof(regex_t), rfree), *re2_ptr = mp_mallocx(sizeof(regex_t), rfree);
+	regex_t *re3_ptr = mp_mallocx(sizeof(regex_t), rfree), *re4_ptr = mp_mallocx(sizeof(regex_t), rfree);
+	regex_t *re5_ptr = mp_mallocx(sizeof(regex_t), rfree), *re6_ptr = mp_mallocx(sizeof(regex_t), rfree);
 
 	regcomp(re1_ptr, "^\\(.*\\) .*", REG_NEWLINE);
 	regcomp(re2_ptr, "^\\(.*\\) .*", REG_NEWLINE);
@@ -146,7 +146,7 @@ int  main() {
 
 int sub() {
 	mp_init();
-	char *cp = mp_alloc(strlen("hello") + 1, NULL);
+	char *cp = mp_malloc(strlen("hello") + 1, NULL);
 	sprintf(cp, "hello");
 	printf("%s ", cp);
 	mp_free(cp);
